@@ -1,0 +1,10 @@
+--- #Installing JAVA
+- hosts: ALL
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: ensure a list of packages is moved
+    raw: yum remove java-1.8.0-openjdk* -y
+      

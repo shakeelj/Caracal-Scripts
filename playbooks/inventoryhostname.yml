@@ -1,0 +1,17 @@
+--- #Installing JAVA
+- hosts: APP
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: Ensure python OpenSSL dependencies are installed.
+    pip:
+      name: pyOpenSSL
+      state: present
+
+  - name: Ensure directory exists for local self-signed TLS certs.
+    file:
+      path: /etc/letsencrypt/{{ inventory_hostname }}
+      state: directory
+

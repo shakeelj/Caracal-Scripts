@@ -1,0 +1,14 @@
+--- #Installing JAVA
+- hosts: ALL
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: ensure a list of packages installed
+    yum:
+     name: "{{ packages }}"
+    vars:
+       packages:
+       - java-1.8.0-openjdk-devel.x86_64
+       - ansible

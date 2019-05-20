@@ -1,0 +1,9 @@
+--- #Copying file to the remote location
+- hosts: CENTOS
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: Copy file to host
+    copy: src=/tmp/{{ inventory_hostname }}.crt dest=/root/shakeel

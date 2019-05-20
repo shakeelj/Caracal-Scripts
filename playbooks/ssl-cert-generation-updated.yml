@@ -1,0 +1,44 @@
+--- #Installing JAVA
+- hosts: APP
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  vars:
+    privateKeyPath: '/etc/pki/tls/private'
+    privateKeyFileName: '{{ privateKeyPath }}/{{ inventory_hostname }}.key'
+    csrPath: '/etc/pki/tls/certs'
+    csrFileName: '{{ csrPath }}/{{ inventory_hostname }}.csr'
+
+
+  tasks:
+  - name: Generate Private Key
+    openssl_privatekey:
+      path: '{{ privateKeyFileName }}'
+      size: 2048
+    tags: generatePrivateKey
+
+  - name: Set Private Key Permissions 
+    file:
+      path: '{{ privateKeyFileName }}'
+      state: 'file'
+      owner: root
+      group: root
+      mode: 0400
+    tags: generatePrivateKey
+
+  - name: Generate Certificate Sign Request (CSR)
+    openssl_csr:      
+      path: '{{ csrFileName }}'
+      privatekey_path: '{{ privateKeyFileName }}'
+      force: True 
+      common_name: '{{ inventory_hostname }}'
+      digest: 'sha256'
+      country_name: 'US'
+      state_or_province_name: 'Virgina'
+      locality_name: 'Norfolk'
+      organization_name: 'ACME Corporation'
+      organizational_unit_name: 'ACME'
+      email_address: 'support@acme.com'
+      subject_alt_name: 'DNS: {{ inventory_hostname }}'
+    tags: generateCSR   

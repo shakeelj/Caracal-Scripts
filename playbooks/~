@@ -1,0 +1,17 @@
+--- #Installing JAVA
+- hosts: APP
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: Creating a directory for the cert
+    file:
+      path: /etc/ssl/private/{{ directory_name }}
+      state: directory
+      mode: 0700
+  - name: Creating a key by using openssl
+    raw:
+      path: /etc/ssl/private/{{ directory_name }}
+      shell: openssl genrsa -des3 -out techspacekh.com.key 2048
+

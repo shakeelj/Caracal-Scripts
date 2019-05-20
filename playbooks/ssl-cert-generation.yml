@@ -1,0 +1,30 @@
+--- #Installing JAVA
+- hosts: APP
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  vars:
+    privateKeyPath: '/etc/pki/tls/private'
+    privateKeyFileName: '{{ privateKeyPath }}/{{ inventory_hostname }}.key'
+  tasks:
+  - name: Generate Private Key
+    openssl_privatekey:
+       path: '{{ privateKeyFileName }}'
+       size: 2048
+
+  - name: Set Private Key Permissions 
+    file:
+      path: '{{ privateKeyFileName }}'
+      state: 'file'
+      owner: root
+      group: root
+      mode: 0400
+
+  - openssl_csr:
+      path: /etc/pki/tls/private/shakeelj3c.mylabserver.com
+      privatekeypath: /etc/ssl/private/{{ inventory_hostname }}
+      country_name: FR
+      organization_name: Ansible
+      email_address: jdoe@ansible.com
+      common_name: www.ansible.com

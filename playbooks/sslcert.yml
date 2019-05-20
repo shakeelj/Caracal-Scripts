@@ -1,0 +1,20 @@
+--- #Create SSL certificates
+- hosts: APP
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: true
+#  tags: [ssl]
+  tasks:
+ 
+  - name: Update the software package repository
+    yum:
+    update_cache: yes
+ 
+  - name: Install openssl
+    package:
+    name: “{{ item }}”
+    state: latest
+    with_items:
+     - openssl
+     - python-openssl

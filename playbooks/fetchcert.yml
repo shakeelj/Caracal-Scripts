@@ -1,0 +1,13 @@
+--- #Installing JAVA
+- hosts: CENTOS
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: Ansible fetch directory example with flat parameter set
+    fetch:
+      src: /root/test/{{ inventory_hostname }}.crt
+      dest: /tmp/
+      mode: 0774
+      flat: yes

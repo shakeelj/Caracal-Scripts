@@ -1,0 +1,35 @@
+---
+- hosts: CENTOS
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  vars:
+  - tmppath: "/root/test/"
+  - pempath: "{{ tmppath }}{{ inventory_hostname }}.key"
+  - csrpath: "{{ tmppath }}{{ inventory_hostname }}.csr"
+  - crtpath: "{{ tmppath }}{{ inventory_hostname }}.crt"
+  tasks:
+
+  - name: Generate RSA Key
+    command: openssl genrsa \ -out "{{ tmppath }}{{ inventory_hostname }}.key" 2048 
+    args:
+      creates: "{{ tmppath }}{{ inventory_hostname }}.key"
+
+  - name: Set Private Key Permissions
+    file:
+      path: '{{ pempath }}'
+      state: 'file'
+      owner: root
+      group: root
+      mode: 0400
+
+  - name: Generate CSR
+    command: openssl req \ -new \ -subj '/C=US/ST=VA/L=DULLES View/O=Raytheon/OU=Caracal/CN={{ inventory_hostname }}' -key "{{ tmppath }}{{ inventory_hostname }}.key" \ -out "{{ tmppath }}{{ inventory_hostname }}.csr"
+    args:
+      creates: "{{ tmppath }}{{ inventory_hostname }}.csr"
+
+  - name: Generate Self-signed Certificate
+    command: openssl req \ -x509 \ -days 2500 \ -key "{{ tmppath }}{{ inventory_hostname }}.key" \ -in "{{ tmppath }}{{ inventory_hostname }}.csr" \ -out "{{ tmppath }}{{ inventory_hostname }}.crt"
+    args:
+      creates: "{{ tmppath }}{{ inventory_hostname }}.crt"
+

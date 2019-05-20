@@ -1,0 +1,21 @@
+--- #Installing JAVA
+- hosts: CENTOS
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: shutdown horton work
+    script: /home/ansible/playbooks/hortonwork-shutdown-start.sh -h shakeelj3c.mylabserver.com -p 8080 -a stop -c AmbariCluster -N admin:admin -t 300 -d
+    args:
+     creates: /home/ansible/playbook/shutdown.txt
+  
+  - name: sleep for 200 seconds and continue with play
+    wait_for: timeout=200
+
+
+  - name: shutdown
+    command: /sbin/shutdown -h now
+
+  - name: wait go down
+    local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped

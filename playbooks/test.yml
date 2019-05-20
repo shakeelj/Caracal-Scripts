@@ -1,0 +1,9 @@
+--- #Installing JAVA
+- hosts: RHEL
+  remote_user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+  - name: ensure a list of packages installed
+    command: mkdir /root/raytheon
